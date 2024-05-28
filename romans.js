@@ -4,14 +4,12 @@ const INVALID_INTEGER = 'Please enter a valid integer';
 const OUT_OF_RANGE = 'Out of range (1-3999)';
 
 function init() { 
-  
   // Load elements once to avoid repetition on every invocation
-  var modeCheckbox = document.querySelector('input[type=\'checkbox\']');
+  var modeCheckbox = document.querySelector('input[type="checkbox"]');
   var header = document.querySelector('h1');
   var convertButton = document.querySelector('.convert-button');
   var outputArea = document.querySelector('.convert-output');
-  var inputArea = document.querySelector('input[type=\'text\']');
-
+  var inputArea = document.querySelector('input[type="text"]');
 
   modeCheckbox.addEventListener('change', function(e) {
     header.innerHTML = getModeTitle(e.target.checked);
@@ -21,7 +19,7 @@ function init() {
     return integerToRoman ? 'Integer To Roman' : 'Roman To Integer';
   };
 
-  // Now, the convertion operation does only perform the operation. 
+  // Now, the conversion operation does only perform the operation. 
   // Things we have extracted to this listener: 
   // 1 - Read the UI inputs (inputArea.value)
   // 2 - Write the UI output (outputArea.innerHTML)
@@ -29,23 +27,30 @@ function init() {
   // This is cleaner and also removes code duplications
   convertButton.addEventListener('click', function() {
     var inputValue = inputArea.value;
-    var convertion = modeCheckbox.checked ? convertIntegerToRoman(inputValue) : convertRomanToInteger(inputValue);
-    if (convertion.result) {
-      outputArea.innerHTML = convertion.value;
+    var conversion = modeCheckbox.checked ? convertIntegerToRoman(inputValue) : convertRomanToInteger(inputValue);
+    if (conversion.result) {
+      outputArea.innerHTML = conversion.value;
+      gtag('event', 'conversion', {
+        'event_category': 'Conversion',
+        'event_label': modeCheckbox.checked ? 'Integer to Roman' : 'Roman to Integer',
+        'value': inputValue
+      });
     } else {
-      alert(convertion.message);
+      alert(conversion.message);
+      gtag('event', 'error', {
+        'event_category': 'Error',
+        'event_label': conversion.message
+      });
     }
   });
-
 }
 
-// Now the convertion methods receive both an input argument instead
+// Now the conversion methods receive both an input argument instead
 // of reading directly from the UI.
 // On top of that, they return a JSON object instead of updating the
 // UI directly. The JSON object contains the result (ok/nok), the value
 // and an error message if needed
 const convertRomanToInteger = function(roman) {
-
   var response = {
     value: 0, 
     message: '',
@@ -99,13 +104,12 @@ const convertRomanToInteger = function(roman) {
   return response;
 };
 
-// Now the convertion methods receive both an input argument instead
+// Now the conversion methods receive both an input argument instead
 // of reading directly from the UI.
 // On top of that, they return a JSON object instead of updating the
 // UI directly. The JSON object contains the result (ok/nok), the value
 // and an error message if needed
 const convertIntegerToRoman = function(num) {
-
   var response = {
     value: 0,
     message: '', 
